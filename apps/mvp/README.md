@@ -49,3 +49,13 @@ Open `http://localhost:3000`
 | `npm run seed`         | Seed users + subscriptions          |
 | `npm run setup`        | migrate + sync + seed               |
 | `npm run typecheck`    | TypeScript check                    |
+
+## Implemented Phases
+
+- Phase 1: Database schema, migration runner, typed DB helpers, deterministic seed data.
+- Phase 2: JSON catalog source + idempotent catalog sync into Postgres read-model tables.
+- Phase 3: Dev-mode auth with NextAuth database sessions, login/verify routes, rate-limited magic links, middleware protection.
+- Phase 4: Mock subscription checkout/cancel flow with transactional locking and consistent 409 business errors.
+- Phase 5: Public catalog + font detail pages, client filtering, preview font loading, shared nav, and auth-aware CTA states.
+
+See `docs/PHASE_DELIVERY.md` for rollout notes and validation status per phase.
