@@ -1,0 +1,246 @@
+[
+  {
+    "sanity_document_id": "family-neue-grid",
+    "foundry_sanity_id": "foundry-atelier-sans",
+    "name": "Neue Grid",
+    "slug": "neue-grid",
+    "description": "A sharp geometric sans-serif built on a strict grid. Ideal for headlines, UI, and branding systems that demand precision.",
+    "category": "sans-serif",
+    "styles": ["geometric", "clean"],
+    "moods": ["modern", "technical"],
+    "use_cases": ["headlines", "ui", "branding"],
+    "featured": true,
+    "qa_status": "published",
+    "weights": [
+      {
+        "sanity_document_id": "weight-neue-grid-light",
+        "name": "Light",
+        "slug": "light",
+        "weight": 300,
+        "style": "normal",
+        "preview_path": "neue-grid/neue-grid-light.woff2",
+        "download_path": "neue-grid/neue-grid-light.otf",
+        "allowed_formats": ["otf", "ttf", "woff2"],
+        "sort_order": 0
+      },
+      {
+        "sanity_document_id": "weight-neue-grid-regular",
+        "name": "Regular",
+        "slug": "regular",
+        "weight": 400,
+        "style": "normal",
+        "preview_path": "neue-grid/neue-grid-regular.woff2",
+        "download_path": "neue-grid/neue-grid-regular.otf",
+        "allowed_formats": ["otf", "ttf", "woff2"],
+        "sort_order": 1
+      },
+      {
+        "sanity_document_id": "weight-neue-grid-bold",
+        "name": "Bold",
+        "slug": "bold",
+        "weight": 700,
+        "style": "normal",
+        "preview_path": "neue-grid/neue-grid-bold.woff2",
+        "download_path": "neue-grid/neue-grid-bold.otf",
+        "allowed_formats": ["otf", "ttf", "woff2"],
+        "sort_order": 2
+      }
+    ],
+    "mockups": [
+      { "src": "neue-grid/hero.png", "alt": "Neue Grid specimen poster" }
+    ]
+  },
+  {
+    "sanity_document_id": "family-signal",
+    "foundry_sanity_id": "foundry-atelier-sans",
+    "name": "Signal",
+    "slug": "signal",
+    "description": "A rounded grotesque with a friendly voice. Works well at small sizes for body text and at large sizes for packaging.",
+    "category": "sans-serif",
+    "styles": ["rounded", "grotesque"],
+    "moods": ["friendly", "approachable"],
+    "use_cases": ["body", "packaging", "editorial"],
+    "featured": false,
+    "qa_status": "published",
+    "weights": [
+      {
+        "sanity_document_id": "weight-signal-regular",
+        "name": "Regular",
+        "slug": "regular",
+        "weight": 400,
+        "style": "normal",
+        "preview_path": "signal/signal-regular.woff2",
+        "download_path": "signal/signal-regular.otf",
+        "allowed_formats": ["otf", "ttf", "woff2"],
+        "sort_order": 0
+      },
+      {
+        "sanity_document_id": "weight-signal-medium",
+        "name": "Medium",
+        "slug": "medium",
+        "weight": 500,
+        "style": "normal",
+        "preview_path": "signal/signal-medium.woff2",
+        "download_path": "signal/signal-medium.otf",
+        "allowed_formats": ["otf", "ttf", "woff2"],
+        "sort_order": 1
+      },
+      {
+        "sanity_document_id": "weight-signal-bold",
+        "name": "Bold",
+        "slug": "bold",
+        "weight": 700,
+        "style": "normal",
+        "preview_path": "signal/signal-bold.woff2",
+        "download_path": "signal/signal-bold.otf",
+        "allowed_formats": ["otf", "ttf", "woff2"],
+        "sort_order": 2
+      }
+    ],
+    "mockups": [
+      { "src": "signal/packaging.png", "alt": "Signal on packaging mockup" }
+    ]
+  },
+  {
+    "sanity_document_id": "family-drift-mono",
+    "foundry_sanity_id": "foundry-atelier-sans",
+    "name": "Drift Mono",
+    "slug": "drift-mono",
+    "description": "A monospaced typeface with subtle humanist touches. Designed for code editors, terminals, and technical documentation.",
+    "category": "monospace",
+    "styles": ["monospaced", "humanist"],
+    "moods": ["technical", "focused"],
+    "use_cases": ["code", "terminals", "documentation"],
+    "featured": false,
+    "qa_status": "published",
+    "weights": [
+      {
+        "sanity_document_id": "weight-drift-mono-regular",
+        "name": "Regular",
+        "slug": "regular",
+        "weight": 400,
+        "style": "normal",
+        "preview_path": "drift-mono/drift-mono-regular.woff2",
+        "download_path": "drift-mono/drift-mono-regular.otf",
+        "allowed_formats": ["otf", "ttf", "woff2"],
+        "sort_order": 0
+      },
+      {
+        "sanity_document_id": "weight-drift-mono-bold",
+        "name": "Bold",
+        "slug": "bold",
+        "weight": 700,
+        "style": "normal",
+        "preview_path": "drift-mono/drift-mono-bold.woff2",
+        "download_path": "drift-mono/drift-mono-bold.otf",
+        "allowed_formats": ["otf", "ttf", "woff2"],
+        "sort_order": 1
+      }
+    ],
+    "mockups": [
+      { "src": "drift-mono/editor.png", "alt": "Drift Mono in a code editor" }
+    ]
+  },
+  {
+    "sanity_document_id": "family-port-serif",
+    "foundry_sanity_id": "foundry-harbor-type",
+    "name": "Port Serif",
+    "slug": "port-serif",
+    "description": "A warm transitional serif with generous x-height. Built for long-form editorial reading and book typography.",
+    "category": "serif",
+    "styles": ["transitional", "classic"],
+    "moods": ["warm", "elegant"],
+    "use_cases": ["editorial", "books", "magazines"],
+    "featured": true,
+    "qa_status": "published",
+    "weights": [
+      {
+        "sanity_document_id": "weight-port-serif-regular",
+        "name": "Regular",
+        "slug": "regular",
+        "weight": 400,
+        "style": "normal",
+        "preview_path": "port-serif/port-serif-regular.woff2",
+        "download_path": "port-serif/port-serif-regular.otf",
+        "allowed_formats": ["otf", "ttf", "woff2"],
+        "sort_order": 0
+      },
+      {
+        "sanity_document_id": "weight-port-serif-regular-italic",
+        "name": "Regular Italic",
+        "slug": "regular-italic",
+        "weight": 400,
+        "style": "italic",
+        "preview_path": "port-serif/port-serif-regular-italic.woff2",
+        "download_path": "port-serif/port-serif-regular-italic.otf",
+        "allowed_formats": ["otf", "ttf", "woff2"],
+        "sort_order": 1
+      },
+      {
+        "sanity_document_id": "weight-port-serif-bold",
+        "name": "Bold",
+        "slug": "bold",
+        "weight": 700,
+        "style": "normal",
+        "preview_path": "port-serif/port-serif-bold.woff2",
+        "download_path": "port-serif/port-serif-bold.otf",
+        "allowed_formats": ["otf", "ttf", "woff2"],
+        "sort_order": 2
+      }
+    ],
+    "mockups": [
+      { "src": "port-serif/editorial.png", "alt": "Port Serif editorial spread" }
+    ]
+  },
+  {
+    "sanity_document_id": "family-anchor-slab",
+    "foundry_sanity_id": "foundry-harbor-type",
+    "name": "Anchor Slab",
+    "slug": "anchor-slab",
+    "description": "A sturdy slab-serif with strong vertical stress. Designed for identity systems, wayfinding, and display use at any scale.",
+    "category": "slab-serif",
+    "styles": ["slab", "industrial"],
+    "moods": ["bold", "confident"],
+    "use_cases": ["identity", "wayfinding", "display"],
+    "featured": false,
+    "qa_status": "published",
+    "weights": [
+      {
+        "sanity_document_id": "weight-anchor-slab-regular",
+        "name": "Regular",
+        "slug": "regular",
+        "weight": 400,
+        "style": "normal",
+        "preview_path": "anchor-slab/anchor-slab-regular.woff2",
+        "download_path": "anchor-slab/anchor-slab-regular.otf",
+        "allowed_formats": ["otf", "ttf", "woff2"],
+        "sort_order": 0
+      },
+      {
+        "sanity_document_id": "weight-anchor-slab-bold",
+        "name": "Bold",
+        "slug": "bold",
+        "weight": 700,
+        "style": "normal",
+        "preview_path": "anchor-slab/anchor-slab-bold.woff2",
+        "download_path": "anchor-slab/anchor-slab-bold.otf",
+        "allowed_formats": ["otf", "ttf", "woff2"],
+        "sort_order": 1
+      },
+      {
+        "sanity_document_id": "weight-anchor-slab-black",
+        "name": "Black",
+        "slug": "black",
+        "weight": 900,
+        "style": "normal",
+        "preview_path": "anchor-slab/anchor-slab-black.woff2",
+        "download_path": "anchor-slab/anchor-slab-black.otf",
+        "allowed_formats": ["otf", "ttf", "woff2"],
+        "sort_order": 2
+      }
+    ],
+    "mockups": [
+      { "src": "anchor-slab/signage.png", "alt": "Anchor Slab on signage" }
+    ]
+  }
+]

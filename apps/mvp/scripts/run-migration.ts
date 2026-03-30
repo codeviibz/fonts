@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { Pool } from "pg";
 
 const DATABASE_URL = process.env.DATABASE_URL;
@@ -9,6 +10,7 @@ if (!DATABASE_URL) {
 }
 
 const pool = new Pool({ connectionString: DATABASE_URL });
+const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 
 async function ensureMigrationsTable(pool: Pool) {
   await pool.query(`
@@ -27,7 +29,7 @@ async function getAppliedMigrations(pool: Pool): Promise<Set<string>> {
 
 async function main() {
   try {
-    const migrationsDir = path.join(import.meta.dirname, "migrations");
+    const migrationsDir = path.join(scriptDir, "migrations");
 
     if (!fs.existsSync(migrationsDir)) {
       console.error(`Migrations directory not found: ${migrationsDir}`);

@@ -1,4 +1,9 @@
-export default function Home() {
+import { getSession } from "@/lib/auth";
+import { AuthStatus } from "@/components/auth-status";
+
+export default async function Home() {
+  const session = await getSession();
+
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col gap-6 p-8">
       <div className="space-y-2">
@@ -7,6 +12,7 @@ export default function Home() {
           Font subscription platform — local MVP
         </p>
       </div>
+      <AuthStatus session={session} />
     </main>
   );
 }

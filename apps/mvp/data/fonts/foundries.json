@@ -1,0 +1,16 @@
+[
+  {
+    "sanity_document_id": "foundry-atelier-sans",
+    "name": "Atelier Sans",
+    "slug": "atelier-sans",
+    "url": "https://atelier-sans.example.com",
+    "description": "A Berlin-based type studio specializing in geometric sans-serifs and display faces for editorial and branding use."
+  },
+  {
+    "sanity_document_id": "foundry-harbor-type",
+    "name": "Harbor Type",
+    "slug": "harbor-type",
+    "url": "https://harbor-type.example.com",
+    "description": "Independent foundry crafting versatile serif and slab-serif families for long-form reading and identity systems."
+  }
+]
