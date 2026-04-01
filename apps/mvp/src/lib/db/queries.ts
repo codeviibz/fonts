@@ -6,6 +6,7 @@ import type {
   DbFontWeight,
   DbFontFamily,
   DbFoundry,
+  DbDownloadRequested,
 } from "@/types/database";
 
 // ── Users ──────────────────────────────────────────────────
@@ -106,4 +107,60 @@ export async function getActiveFoundries(): Promise<DbFoundry[]> {
     "SELECT * FROM foundries WHERE is_active = true ORDER BY name"
   );
   return result.rows;
+}
+
+// ── Download Logging ──────────────────────────────────────
+
+export interface LogDownloadParams {
+  userId: number;
+  fontWeightId: string;
+  fontFamilyId: string;
+  foundryId: string;
+  entitlementId: string;
+  format: string;
+  signedUrlHash: string;
+  ipAddress: string | null;
+  userAgent: string | null;
+}
+
+export async function logDownloadRequest(
+  params: LogDownloadParams
+): Promise<DbDownloadRequested> {
+  const result = await pool.query<DbDownloadRequested>(
+    `INSERT INTO download_requested
+       (user_id, font_weight_id, font_family_id, foundry_id,
+        entitlement_id, format, signed_url_hash, ip_address, user_agent)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+     RETURNING *`,
+    [
+      params.userId,
+      params.fontWeightId,
+      params.fontFamilyId,
+      params.foundryId,
+      params.entitlementId,
+      params.format,
+      params.signedUrlHash,
+      params.ipAddress,
+      params.userAgent,
+    ]
+  );
+  return result.rows[0];
+}
+
+// ── Weight ID Resolution ──────────────────────────────────
+
+export async function getWeightIdsBySanityIds(
+  sanityIds: string[]
+): Promise<Record<string, string>> {
+  if (sanityIds.length === 0) return {};
+  const result = await pool.query<{ id: string; sanity_document_id: string }>(
+    `SELECT id, sanity_document_id FROM font_weights
+     WHERE sanity_document_id = ANY($1) AND is_active = true`,
+    [sanityIds]
+  );
+  const map: Record<string, string> = {};
+  for (const row of result.rows) {
+    map[row.sanity_document_id] = row.id;
+  }
+  return map;
 }

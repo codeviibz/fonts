@@ -3,11 +3,9 @@ import { getActiveFontFamilies, getActiveFoundries } from "@/lib/db/queries";
 import { CatalogClient } from "./catalog-client";
 
 function shouldFallbackToJson(error: unknown): boolean {
-  return (
-    process.env.NODE_ENV !== "production" &&
-    error instanceof Error &&
-    error.message.includes("DATABASE_URL environment variable is required")
-  );
+  if (!(error instanceof Error)) return false;
+  if (!error.message.includes("DATABASE_URL environment variable is required")) return false;
+  return process.env.NODE_ENV !== "production" && !process.env.DATABASE_URL;
 }
 
 export const metadata = {

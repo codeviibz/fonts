@@ -57,5 +57,6 @@ Open `http://localhost:3000`
 - Phase 3: Dev-mode auth with NextAuth database sessions, login/verify routes, rate-limited magic links, middleware protection.
 - Phase 4: Mock subscription checkout/cancel flow with transactional locking and consistent 409 business errors.
 - Phase 5: Public catalog + font detail pages, client filtering, preview font loading, shared nav, and auth-aware CTA states.
+- Phase 6: Gated font downloads (`/api/download/[fontWeightId]`), immutable `download_requested` logging, local disk storage under `data/font-files/downloads`, and wired detail-page download buttons.
 
 See `docs/PHASE_DELIVERY.md` for rollout notes and validation status per phase.

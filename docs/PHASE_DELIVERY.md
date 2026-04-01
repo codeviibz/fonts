@@ -63,6 +63,22 @@ This file tracks what was shipped for each phase, the validation performed, and 
   - Typecheck and lint pass.
   - Smoke tests: `/` 200, `/fonts` 200, `/fonts/[slug]` 200, invalid slug 404.
 
+## Phase 6 — Gated Downloads & Download Logging
+
+- Status: Shipped
+- Scope:
+  - Local file storage helpers under `data/font-files/downloads` (`getFileBuffer`, `fileExists`).
+  - `evaluateDownloadAccess(userId, fontWeightId, format)` — active entitlement, active weight with `download_path`, and allowed formats as the **intersection** of entitlement and weight `allowed_formats` (case-insensitive).
+  - `GET /api/download/[fontWeightId]?format=` — requires auth, evaluates access, inserts `download_requested` (with `signed_url_hash` for schema continuity), streams attachment with appropriate `Content-Type` and `Cache-Control: private, no-cache`.
+  - Font detail page resolves DB weight UUIDs from JSON `sanity_document_id` via `getWeightIdsBySanityIds`; per-weight download buttons with loading and error states.
+- Security / data-integrity hardening:
+  - Path traversal guard: resolved download paths must stay under the downloads root (rejects `..`, empty path, and absolute escapes).
+  - Catalog/detail `shouldFallbackToJson` only when **non-production**, `DATABASE_URL` is unset, and the error is specifically the missing-URL pool init — production builds require a configured database.
+- Validation:
+  - Typecheck and lint pass.
+  - Smoke: unauthenticated download 401; no/cancelled entitlement 403; invalid weight 403; disallowed format 403; successful download 200 when file exists on disk; row present in `download_requested`.
+  - Operational: if `localhost:3000` returns 500 with `Cannot find module './NNN.js'` or webpack cache ENOENT, stop the dev server, remove `apps/mvp/.next`, and restart (stale cache after interrupted build).
+
 ## Forward Process (For All Future Phases)
 
 For every future phase push, update this file with:

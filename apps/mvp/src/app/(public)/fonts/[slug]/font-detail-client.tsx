@@ -12,6 +12,7 @@ interface Props {
   foundrySlug?: string;
   isLoggedIn: boolean;
   hasEntitlement: boolean;
+  weightIdMap: Record<string, string>;
 }
 
 const SPECIMEN_TEXTS = [
@@ -26,6 +27,7 @@ export function FontDetailClient({
   foundryName,
   isLoggedIn,
   hasEntitlement,
+  weightIdMap,
 }: Props) {
   const [specimenText, setSpecimenText] = useState(SPECIMEN_TEXTS[0]);
   const [specimenSize, setSpecimenSize] = useState(40);
@@ -157,6 +159,7 @@ export function FontDetailClient({
               familyName={family.name}
               isLoggedIn={isLoggedIn}
               hasEntitlement={hasEntitlement}
+              dbWeightId={weightIdMap[w.sanity_document_id]}
             />
           ))}
         </div>
@@ -231,12 +234,15 @@ function WeightRow({
   familyName,
   isLoggedIn,
   hasEntitlement,
+  dbWeightId,
 }: {
   weight: CatalogWeight;
   familyName: string;
   isLoggedIn: boolean;
   hasEntitlement: boolean;
+  dbWeightId?: string;
 }) {
+  const formats = weight.allowed_formats ?? ["otf", "ttf", "woff2"];
   return (
     <div className="flex items-center justify-between px-4 py-3">
       <div className="flex items-center gap-4">
@@ -248,13 +254,15 @@ function WeightRow({
             {familyName} {weight.name}
           </p>
           <p className="text-xs text-muted-foreground">
-            {weight.style} &middot; {weight.allowed_formats?.join(", ") ?? "otf, ttf, woff2"}
+            {weight.style} &middot; {formats.join(", ")}
           </p>
         </div>
       </div>
       <DownloadButton
         isLoggedIn={isLoggedIn}
         hasEntitlement={hasEntitlement}
+        dbWeightId={dbWeightId}
+        formats={formats}
       />
     </div>
   );
@@ -287,10 +295,17 @@ function DownloadCTA({
 function DownloadButton({
   isLoggedIn,
   hasEntitlement,
+  dbWeightId,
+  formats,
 }: {
   isLoggedIn: boolean;
   hasEntitlement: boolean;
+  dbWeightId?: string;
+  formats: string[];
 }) {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   if (!isLoggedIn) {
     return (
       <Link href="/login" className={buttonVariants({ variant: "outline", size: "sm" })}>
@@ -305,9 +320,63 @@ function DownloadButton({
       </Link>
     );
   }
+
+  if (!dbWeightId) {
+    return (
+      <Button variant="outline" size="sm" disabled>
+        Unavailable
+      </Button>
+    );
+  }
+
+  const preferredFormat = formats[0] ?? "otf";
+
+  async function handleDownload() {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(
+        `/api/download/${dbWeightId}?format=${preferredFormat}`
+      );
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error ?? `Download failed (${res.status})`);
+      }
+      const blob = await res.blob();
+      const disposition = res.headers.get("content-disposition");
+      let filename = `font.${preferredFormat}`;
+      if (disposition) {
+        const match = disposition.match(/filename="?([^"]+)"?/);
+        if (match) filename = match[1];
+      }
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Download failed");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
-    <Button variant="outline" size="sm" disabled>
-      Download (Phase 6)
-    </Button>
+    <div className="flex items-center gap-2">
+      {error && (
+        <span className="text-xs text-destructive">{error}</span>
+      )}
+      <Button
+        variant="outline"
+        size="sm"
+        disabled={loading}
+        onClick={handleDownload}
+      >
+        {loading ? "Downloading…" : "Download"}
+      </Button>
+    </div>
   );
 }

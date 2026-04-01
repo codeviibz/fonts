@@ -5,6 +5,7 @@ import {
   getActiveEntitlement,
   getFontFamilyBySlug,
   getActiveFontFamilies,
+  getWeightIdsBySanityIds,
 } from "@/lib/db/queries";
 import { FontDetailClient } from "./font-detail-client";
 import type { Metadata } from "next";
@@ -14,11 +15,9 @@ interface PageProps {
 }
 
 function shouldFallbackToJson(error: unknown): boolean {
-  return (
-    process.env.NODE_ENV !== "production" &&
-    error instanceof Error &&
-    error.message.includes("DATABASE_URL environment variable is required")
-  );
+  if (!(error instanceof Error)) return false;
+  if (!error.message.includes("DATABASE_URL environment variable is required")) return false;
+  return process.env.NODE_ENV !== "production" && !process.env.DATABASE_URL;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -76,6 +75,16 @@ export default async function FontDetailPage({ params }: PageProps) {
     hasEntitlement = ent !== null;
   }
 
+  let weightIdMap: Record<string, string> = {};
+  try {
+    const sanityIds = family.weights.map((w) => w.sanity_document_id);
+    weightIdMap = await getWeightIdsBySanityIds(sanityIds);
+  } catch (error) {
+    if (!shouldFallbackToJson(error)) {
+      throw error;
+    }
+  }
+
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-10">
       <FontDetailClient
@@ -84,6 +93,7 @@ export default async function FontDetailPage({ params }: PageProps) {
         foundrySlug={foundry?.slug}
         isLoggedIn={!!session?.user}
         hasEntitlement={hasEntitlement}
+        weightIdMap={weightIdMap}
       />
     </main>
   );
