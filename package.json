@@ -12,6 +12,7 @@
     "dev:worker": "npm -w @fonts/worker run dev",
     "typecheck": "npm -w @fonts/app run typecheck && npm -w @fonts/worker run typecheck",
     "typecheck:mvp": "npm -w @fonts/mvp run typecheck",
+    "test:mvp": "npm -w @fonts/mvp run test",
     "mvp:migrate": "npm -w @fonts/mvp run migrate",
     "mvp:seed": "npm -w @fonts/mvp run seed",
     "mvp:setup": "npm -w @fonts/mvp run setup"

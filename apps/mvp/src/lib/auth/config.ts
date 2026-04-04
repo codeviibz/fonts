@@ -14,6 +14,7 @@ export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/login",
     verifyRequest: "/verify",
+    error: "/auth-error",
   },
   providers: [
     EmailProvider({

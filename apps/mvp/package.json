@@ -6,12 +6,19 @@
     "dev": "next dev -p 3000",
     "build": "next build",
     "start": "next start -p 3000",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "migrate": "npx tsx scripts/run-migration.ts",
     "sync": "npx tsx scripts/sync-catalog.ts",
     "seed": "npx tsx scripts/seed.ts",
-    "setup": "npm run migrate && npm run sync && npm run seed"
+    "setup": "npm run migrate && npm run sync && npm run seed",
+    "admin:lookup": "npx tsx scripts/admin/lookup-user.ts",
+    "admin:revoke": "npx tsx scripts/admin/revoke-access.ts",
+    "admin:restore": "npx tsx scripts/admin/restore-access.ts",
+    "admin:export-downloads": "npx tsx scripts/admin/export-downloads.ts",
+    "admin:delete-account": "npx tsx scripts/admin/delete-account.ts"
   },
   "dependencies": {
     "@auth/pg-adapter": "^1.7.4",
@@ -39,6 +46,7 @@
     "postcss": "^8.5.3",
     "tailwindcss": "^3.4.17",
     "tsx": "^4.19.4",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vitest": "^4.1.2"
   }
 }

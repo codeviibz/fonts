@@ -79,6 +79,50 @@ This file tracks what was shipped for each phase, the validation performed, and 
   - Smoke: unauthenticated download 401; no/cancelled entitlement 403; invalid weight 403; disallowed format 403; successful download 200 when file exists on disk; row present in `download_requested`.
   - Operational: if `localhost:3000` returns 500 with `Cannot find module './NNN.js'` or webpack cache ENOENT, stop the dev server, remove `apps/mvp/.next`, and restart (stale cache after interrupted build).
 
+## Phase 7 — Admin CLI Scripts
+
+- Status: Shipped
+- Scope:
+  - Shared CLI helpers (`scripts/admin/_shared.ts`): input validation (`parseUserId`, `parseRequiredText`, `parseIsoDate`), admin actor authentication (`getAdminActorId`, `assertAdminActor`), centralized audit logging (`logAdminAudit`), and deterministic anonymization (`computeAnonSubjectId`).
+  - `lookup-user.ts <email>` — read-only user/subscription/entitlement/download summary.
+  - `revoke-access.ts <userId> <reason>` — transactionally cancels active subscriptions and revokes entitlements; requires `ADMIN_USER_ID`.
+  - `restore-access.ts <userId> <reason>` — reactivates or creates subscription+entitlement; handles "already active" as an audited no-op; requires `ADMIN_USER_ID`.
+  - `export-downloads.ts <foundryId> <startDate> <endDate>` — exports TSV with foundry-scoped download data.
+  - `delete-account.ts <userId>` — anonymizes download records, cascading-deletes user; prevents self-deletion; requires `ADMIN_USER_ID`.
+  - Runtime audit helper at `src/lib/admin/audit.ts` (`logAdminAction`) for future web-based admin operations.
+- Security / integrity hardening:
+  - All mutating scripts require `ADMIN_USER_ID` env var; actor role is verified against DB before any mutation.
+  - `process.exit()` replaced with thrown errors inside `try` blocks to ensure `ROLLBACK` + `client.release()` in `catch`/`finally`.
+  - `delete-account` prevents deletion of the admin actor's own account (avoids FK violation on audit log).
+  - Input validation rejects non-integer user IDs, empty strings, and malformed dates.
+- Validation:
+  - Typecheck and lint pass.
+  - Smoke: `lookup-user` displays user data; `revoke-access` cancels subscriptions/entitlements; `restore-access` reactivates and handles idempotent no-op; `export-downloads` outputs TSV; `delete-account` self-protection rejects; all audit entries correctly attributed to admin actor with well-formed JSON details.
+  - Error cases: missing `ADMIN_USER_ID` exits with clear error; invalid `userId` rejected; nonexistent user rejected.
+
+## Phase 8 — Integration Tests & Polish
+
+- Status: Shipped
+- Scope:
+  - Added Vitest-based integration test infrastructure with DB-backed setup (`vitest.config.ts`, `tests/setup.ts`, `tests/helpers/db.ts`).
+  - Added critical high-risk test coverage:
+    - Entitlement checks: active vs no entitlement vs invalid format.
+    - Subscription lifecycle: create, duplicate reject, cancel.
+    - Download logging persistence: captured IDs and request hash integrity.
+    - Catalog sync idempotency and deactivate-on-missing behavior.
+    - Seed/sync independence guarantees.
+    - Account anonymization: `anon_subject_id` set and `user_id` / `entitlement_id` nulled on delete.
+  - Added auth error UX page for invalid/expired magic links (`/auth-error`) and wired NextAuth `pages.error`.
+  - Added app-wide custom 404 page (`src/app/not-found.tsx`).
+  - Upgraded root metadata defaults for basic SEO/social sharing (`title` template, Open Graph, Twitter card).
+- Security / integrity hardening:
+  - Fixed `delete-account.ts` to also null `download_requested.entitlement_id` during anonymization, preventing FK violations when cascading entitlements on user deletion.
+  - Added regression test to lock this behavior.
+- Validation:
+  - `npm -w @fonts/mvp run test` passes (5 files / 9 tests).
+  - `npm -w @fonts/mvp run typecheck` passes.
+  - `npm -w @fonts/mvp run lint` passes.
+
 ## Forward Process (For All Future Phases)
 
 For every future phase push, update this file with:

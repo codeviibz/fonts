@@ -48,6 +48,8 @@ Open `http://localhost:3000`
 | `npm run sync`         | Sync JSON catalog to Postgres       |
 | `npm run seed`         | Seed users + subscriptions          |
 | `npm run setup`        | migrate + sync + seed               |
+| `npm run test`         | Run Vitest integration test suite   |
+| `npm run test:watch`   | Run Vitest in watch mode            |
 | `npm run typecheck`    | TypeScript check                    |
 
 ## Implemented Phases
@@ -58,5 +60,19 @@ Open `http://localhost:3000`
 - Phase 4: Mock subscription checkout/cancel flow with transactional locking and consistent 409 business errors.
 - Phase 5: Public catalog + font detail pages, client filtering, preview font loading, shared nav, and auth-aware CTA states.
 - Phase 6: Gated font downloads (`/api/download/[fontWeightId]`), immutable `download_requested` logging, local disk storage under `data/font-files/downloads`, and wired detail-page download buttons.
+- Phase 7: Admin CLI scripts for user lookup, access revocation/restore, download export, and account deletion with audit logging.
+- Phase 8: Vitest integration tests for high-risk paths, auth error UX, custom 404, and improved metadata/SEO defaults.
+
+## Admin CLI Scripts
+
+| Command                                              | Description                          |
+| ---------------------------------------------------- | ------------------------------------ |
+| `npm run admin:lookup <email>`                       | Look up user details                 |
+| `npm run admin:revoke <userId> <reason>`             | Revoke user access (cancel sub+ent)  |
+| `npm run admin:restore <userId> <reason>`            | Restore user access                  |
+| `npm run admin:export-downloads <foundryId> <s> <e>` | Export downloads as TSV              |
+| `npm run admin:delete-account <userId>`              | Delete account + anonymize downloads |
+
+Admin scripts require `ADMIN_USER_ID=<admin-user-id>` environment variable for mutating operations.
 
 See `docs/PHASE_DELIVERY.md` for rollout notes and validation status per phase.
