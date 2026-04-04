@@ -123,6 +123,22 @@ This file tracks what was shipped for each phase, the validation performed, and 
   - `npm -w @fonts/mvp run typecheck` passes.
   - `npm -w @fonts/mvp run lint` passes.
 
+## Phase 9 — Architecture & Maintainability Refactor
+
+- Status: Shipped
+- Scope:
+  - Added shared catalog runtime service (`src/lib/catalog/runtime.ts`) to centralize active-catalog resolution, static slug generation, and detail-page weight-id mapping with controlled local fallback behavior.
+  - Refactored `/fonts` and `/fonts/[slug]` pages to consume the shared catalog service instead of duplicating DB/JSON fallback logic in each page.
+  - Added download domain service (`src/lib/downloads/service.ts`) to centralize download preparation concerns (access checks, foundry resolution, immutable logging, file loading, and content metadata generation).
+  - Slimmed `GET /api/download/[fontWeightId]` route to orchestrate request/response only and delegate domain logic to service layer.
+  - Added repository helper `getFoundryIdByFamilyId` for explicit data access instead of ad-hoc query import in route code.
+- Product/operations documentation:
+  - Added PM-facing brief: `docs/PM_PHASE_9_ARCHITECTURE_ADJUSTMENTS.md`.
+- Validation:
+  - `npm -w @fonts/mvp run test` passes.
+  - `npm -w @fonts/mvp run typecheck` passes.
+  - `npm -w @fonts/mvp run lint` passes.
+
 ## Forward Process (For All Future Phases)
 
 For every future phase push, update this file with:

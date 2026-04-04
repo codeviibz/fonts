@@ -62,6 +62,7 @@ Open `http://localhost:3000`
 - Phase 6: Gated font downloads (`/api/download/[fontWeightId]`), immutable `download_requested` logging, local disk storage under `data/font-files/downloads`, and wired detail-page download buttons.
 - Phase 7: Admin CLI scripts for user lookup, access revocation/restore, download export, and account deletion with audit logging.
 - Phase 8: Vitest integration tests for high-risk paths, auth error UX, custom 404, and improved metadata/SEO defaults.
+- Phase 9: Architecture refactor for maintainability (shared catalog runtime service + download domain service + thinner route handlers).
 
 ## Admin CLI Scripts
 
@@ -76,3 +77,4 @@ Open `http://localhost:3000`
 Admin scripts require `ADMIN_USER_ID=<admin-user-id>` environment variable for mutating operations.
 
 See `docs/PHASE_DELIVERY.md` for rollout notes and validation status per phase.
+For non-technical rollout context, see `docs/PM_PHASE_9_ARCHITECTURE_ADJUSTMENTS.md`.

@@ -5,12 +5,19 @@ declare global {
   var _pgPool: Pool | undefined;
 }
 
+export class MissingDatabaseUrlError extends Error {
+  constructor() {
+    super("DATABASE_URL environment variable is required");
+    this.name = "MissingDatabaseUrlError";
+  }
+}
+
 function getPool(): Pool {
   if (global._pgPool) return global._pgPool;
 
   const url = process.env.DATABASE_URL;
   if (!url) {
-    throw new Error("DATABASE_URL environment variable is required");
+    throw new MissingDatabaseUrlError();
   }
 
   const p = new Pool({

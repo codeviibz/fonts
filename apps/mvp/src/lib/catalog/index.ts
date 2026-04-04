@@ -4,3 +4,8 @@ export {
   getFamilyBySlug,
   invalidateCache,
 } from "./local";
+export {
+  getCatalogListingFamilies,
+  getCatalogStaticSlugs,
+  getCatalogFamilyDetail,
+} from "./runtime";

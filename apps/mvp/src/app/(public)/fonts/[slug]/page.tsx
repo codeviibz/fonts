@@ -1,23 +1,12 @@
 import { notFound } from "next/navigation";
-import { getFamilyBySlug, getAllPublishedFamilies, getAllFoundries } from "@/lib/catalog";
+import { getFamilyBySlug, getCatalogFamilyDetail, getCatalogStaticSlugs } from "@/lib/catalog";
 import { getSession } from "@/lib/auth";
-import {
-  getActiveEntitlement,
-  getFontFamilyBySlug,
-  getActiveFontFamilies,
-  getWeightIdsBySanityIds,
-} from "@/lib/db/queries";
+import { getActiveEntitlement } from "@/lib/db/queries";
 import { FontDetailClient } from "./font-detail-client";
 import type { Metadata } from "next";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
-}
-
-function shouldFallbackToJson(error: unknown): boolean {
-  if (!(error instanceof Error)) return false;
-  if (!error.message.includes("DATABASE_URL environment variable is required")) return false;
-  return process.env.NODE_ENV !== "production" && !process.env.DATABASE_URL;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -31,42 +20,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export async function generateStaticParams() {
-  const families = getAllPublishedFamilies();
-
-  try {
-    const activeFamilies = await getActiveFontFamilies();
-    const activeSanityIds = new Set(
-      activeFamilies.map((family) => family.sanity_document_id)
-    );
-
-    return families
-      .filter((family) => activeSanityIds.has(family.sanity_document_id))
-      .map((family) => ({ slug: family.slug }));
-  } catch (error) {
-    if (shouldFallbackToJson(error)) {
-      return families.map((family) => ({ slug: family.slug }));
-    }
-    throw error;
-  }
+  const slugs = await getCatalogStaticSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export default async function FontDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  const family = getFamilyBySlug(slug);
-  if (!family) notFound();
-
-  let activeFamilyRow = null;
-  try {
-    activeFamilyRow = await getFontFamilyBySlug(slug);
-  } catch (error) {
-    if (!shouldFallbackToJson(error)) {
-      throw error;
-    }
-  }
-  if (process.env.DATABASE_URL && !activeFamilyRow) notFound();
-
-  const foundries = getAllFoundries();
-  const foundry = foundries.find((f) => f.sanity_document_id === family.foundry_sanity_id);
+  const detail = await getCatalogFamilyDetail(slug);
+  if (!detail) notFound();
 
   const session = await getSession();
   let hasEntitlement = false;
@@ -75,25 +36,15 @@ export default async function FontDetailPage({ params }: PageProps) {
     hasEntitlement = ent !== null;
   }
 
-  let weightIdMap: Record<string, string> = {};
-  try {
-    const sanityIds = family.weights.map((w) => w.sanity_document_id);
-    weightIdMap = await getWeightIdsBySanityIds(sanityIds);
-  } catch (error) {
-    if (!shouldFallbackToJson(error)) {
-      throw error;
-    }
-  }
-
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-10">
       <FontDetailClient
-        family={family}
-        foundryName={foundry?.name ?? "Unknown"}
-        foundrySlug={foundry?.slug}
+        family={detail.family}
+        foundryName={detail.foundryName}
+        foundrySlug={detail.foundrySlug}
         isLoggedIn={!!session?.user}
         hasEntitlement={hasEntitlement}
-        weightIdMap={weightIdMap}
+        weightIdMap={detail.weightIdMap}
       />
     </main>
   );

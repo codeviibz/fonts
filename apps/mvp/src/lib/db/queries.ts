@@ -102,6 +102,16 @@ export async function getFoundryById(
   return result.rows[0] ?? null;
 }
 
+export async function getFoundryIdByFamilyId(
+  familyId: string
+): Promise<string | null> {
+  const result = await pool.query<{ foundry_id: string }>(
+    "SELECT foundry_id FROM font_families WHERE id = $1",
+    [familyId]
+  );
+  return result.rows[0]?.foundry_id ?? null;
+}
+
 export async function getActiveFoundries(): Promise<DbFoundry[]> {
   const result = await pool.query<DbFoundry>(
     "SELECT * FROM foundries WHERE is_active = true ORDER BY name"

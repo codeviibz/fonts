@@ -1,12 +1,5 @@
-import { getAllPublishedFamilies, getAllFoundries } from "@/lib/catalog";
-import { getActiveFontFamilies, getActiveFoundries } from "@/lib/db/queries";
+import { getAllFoundries, getCatalogListingFamilies } from "@/lib/catalog";
 import { CatalogClient } from "./catalog-client";
-
-function shouldFallbackToJson(error: unknown): boolean {
-  if (!(error instanceof Error)) return false;
-  if (!error.message.includes("DATABASE_URL environment variable is required")) return false;
-  return process.env.NODE_ENV !== "production" && !process.env.DATABASE_URL;
-}
 
 export const metadata = {
   title: "Font Catalog — Fonts",
@@ -14,34 +7,8 @@ export const metadata = {
 };
 
 export default async function CatalogPage() {
-  const families = getAllPublishedFamilies();
+  const activeCatalogFamilies = await getCatalogListingFamilies();
   const foundries = getAllFoundries();
-
-  let activeCatalogFamilies = families;
-  try {
-    const [activeFamilies, activeFoundries] = await Promise.all([
-      getActiveFontFamilies(),
-      getActiveFoundries(),
-    ]);
-
-    const activeFamilySanityIds = new Set(
-      activeFamilies.map((family) => family.sanity_document_id)
-    );
-    const activeFoundrySanityIds = new Set(
-      activeFoundries.map((foundry) => foundry.sanity_document_id)
-    );
-
-    activeCatalogFamilies = families.filter(
-      (family) =>
-        activeFamilySanityIds.has(family.sanity_document_id) &&
-        activeFoundrySanityIds.has(family.foundry_sanity_id)
-    );
-  } catch (error) {
-    if (!shouldFallbackToJson(error)) {
-      throw error;
-    }
-    // Local-dev fallback when DATABASE_URL is intentionally unset.
-  }
 
   const foundryMap = new Map(foundries.map((f) => [f.sanity_document_id, f]));
 
